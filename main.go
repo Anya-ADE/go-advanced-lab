@@ -117,7 +117,6 @@ func Compose(f func(int) int, g func(int) int) func(int) int {
 }
 
 func ExploreProcess() {
-	fmt.Println("=== Process Information ===")
 	// A Process ID (PID) is a unique numerical identifier assigned by the
 	// operating system to every active process
 	fmt.Printf("Current Process ID: %d\n", os.Getpid())
