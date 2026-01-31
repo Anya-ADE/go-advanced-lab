@@ -55,6 +55,34 @@ func Power(base, exponent int) (int, error) {
 	return result, nil
 }
 
+func MakeCounter(start int) func() int {
+	count := start
+	return func() int {
+		count++
+		return count
+	}
+}
+
+func MakeMultiplier(factor int) func(int) int {
+	return func(n int) int {
+		return n * factor
+	}
+}
+
+func MakeAccumulator(initial int) (add func(int), subtract func(int), get func() int) {
+	accumulator := initial
+	add = func(n int) {
+		accumulator += n
+	}
+	subtract = func(n int) {
+		accumulator -= n
+	}
+	get = func() int {
+		return accumulator
+	}
+	return add, subtract, get
+}
+
 func main() {
 	fmt.Println("=== Math Operations ===")
 	f5, _ := Factorial(5)
@@ -65,5 +93,30 @@ func main() {
 
 	pow, _ := Power(2, 8)
 	fmt.Printf("Power(2, 8) = %d\n", pow)
+	fmt.Println("===")
+
+	fmt.Println("=== Counter Function ===")
+	counter1 := MakeCounter(0)
+	fmt.Println(counter1())
+	fmt.Println(counter1())
+
+	counter2 := MakeCounter(10)
+	fmt.Println(counter2())
+	fmt.Println(counter1())
+	fmt.Println("===")
+
+	fmt.Println("=== Multiplier Function ===")
+	double := MakeMultiplier(2)
+	triple := MakeMultiplier(3)
+	fmt.Println(double(5))
+	fmt.Println(triple(5))
+	fmt.Println("===")
+
+	fmt.Println("=== Accumulator Function ===")
+	add, sub, get := MakeAccumulator(100)
+	add(50)
+	fmt.Println(get())
+	sub(30)
+	fmt.Println(get())
 	fmt.Println("===")
 }

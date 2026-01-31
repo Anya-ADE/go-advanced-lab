@@ -90,3 +90,49 @@ func TestPower(t *testing.T) {
 		})
 	}
 }
+
+func TestMakeCounter(t *testing.T) {
+	t.Run("counters are independent", func(t *testing.T) {
+		c1 := MakeCounter(0)
+		c2 := MakeCounter(10)
+
+		if res := c1(); res != 1 {
+			t.Errorf("c1 expected 1, got %d", res)
+		}
+		if res := c2(); res != 11 {
+			t.Errorf("c2 expected 11, got %d", res)
+		}
+		if res := c1(); res != 2 {
+			t.Errorf("c1 expected 2, got %d", res)
+		}
+	})
+}
+
+func TestMakeMultiplier(t *testing.T) {
+	{
+		double := MakeMultiplier(2)
+		triple := MakeMultiplier(3)
+
+		if res := double(5); res != 10 {
+			t.Errorf("double expected 10, got %d", res)
+		}
+		if res := triple(5); res != 15 {
+			t.Errorf("triple expected 15, got %d", res)
+		}
+		if res := double(10); res != 20 {
+			t.Errorf("double expected 20, got %d", res)
+		}
+	}
+}
+
+func TestMakeAccumulator(t *testing.T) {
+	add, sub, get := MakeAccumulator(100)
+	add(50)
+	if get() != 150 {
+		t.Errorf("expected 150, got %d", get())
+	}
+	sub(30)
+	if get() != 120 {
+		t.Errorf("expected 120, got %d", get())
+	}
+}
