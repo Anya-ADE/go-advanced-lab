@@ -337,11 +337,11 @@ func TestDoubleValue(t *testing.T) {
 }
 
 func TestDoublePointer(t *testing.T) {
-	t.Run("Pointer should change original", func(t *testing.T) {
-		val := 10
+	t.Run("Value should be doubled", func(t *testing.T) {
+		val := 15
 		DoublePointer(&val)
-		if val != 20 {
-			t.Errorf("DoublePointer failed to modify original. Got %d, want 20", val)
+		if val != 30 {
+			t.Errorf("DoublePointer failed! Got %d, want 30", val)
 		}
 	})
 }
