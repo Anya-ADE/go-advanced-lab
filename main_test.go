@@ -325,3 +325,65 @@ func TestCompose(t *testing.T) {
 		})
 	}
 }
+
+func TestDoubleValue(t *testing.T) {
+	t.Run("Value should not change original", func(t *testing.T) {
+		val := 10
+		DoubleValue(val)
+		if val != 10 {
+			t.Errorf("DoubleValue modified the original! Got %d, want 10", val)
+		}
+	})
+}
+
+func TestDoublePointer(t *testing.T) {
+	t.Run("Pointer should change original", func(t *testing.T) {
+		val := 10
+		DoublePointer(&val)
+		if val != 20 {
+			t.Errorf("DoublePointer failed to modify original. Got %d, want 20", val)
+		}
+	})
+}
+
+func TestSwapValues(t *testing.T) {
+	tests := []struct {
+		name         string
+		a, b         int
+		wantA, wantB int
+	}{
+		{"swap positives", 5, 10, 10, 5},
+		{"swap with zero", 0, 100, 100, 0},
+		{"swap negatives", -1, -5, -5, -1},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotA, gotB := SwapValues(tt.a, tt.b)
+			if gotA != tt.wantA || gotB != tt.wantB {
+				t.Errorf("SwapValues(%d, %d) = %d, %d; want %d, %d", tt.a, tt.b, gotA, gotB, tt.wantA, tt.wantB)
+			}
+		})
+	}
+}
+
+func TestSwapPointers(t *testing.T) {
+	tests := []struct {
+		name         string
+		a, b         int
+		wantA, wantB int
+	}{
+		{"pointer swap 1", 10, 20, 20, 10},
+		{"pointer swap 2", 100, 200, 200, 100},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			localA, localB := tt.a, tt.b
+			SwapPointers(&localA, &localB)
+			if localA != tt.wantA || localB != tt.wantB {
+				t.Errorf("SwapPointers() failed: a=%d, b=%d; want a=%d, b=%d", localA, localB, tt.wantA, tt.wantB)
+			}
+		})
+	}
+}

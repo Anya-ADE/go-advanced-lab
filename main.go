@@ -131,7 +131,59 @@ func ExploreProcess() {
 	fmt.Println("\nNote: Other processes cannot access these memory addresses due to process isolation.")
 }
 
+func DoubleValue(x int) int {
+	return x * 2
+}
+
+func DoublePointer(x *int) {
+	*x = *x * 2
+}
+
+func CreateOnStack() int {
+	x := 42
+	return x
+}
+
+func CreateOnHeap() *int {
+	x := new(int)
+	*x = 42
+	return x
+}
+
+func SwapValues(a, b int) (int, int) {
+	return b, a
+}
+
+func SwapPointers(a, b *int) {
+	*a, *b = *b, *a
+}
+
+func AnalyzeEscape() {
+	CreateOnStack()
+	_ = CreateOnHeap()
+
+	val := "test"
+	fmt.Printf("Address of val in AnalyzeEscape: %p\n", &val)
+
+	/* --- SIMPLE EXPLANATION ---
+	1. Which variables escaped? - 'x' in CreateOnHeap() and 'val' in AnalyzeEscape().
+
+	2. Why did they escape? - 'x' escaped because the function returned its address.
+	If it stayed on the stack, it would vanish the moment the function ended,
+	leaving you with a pointer to nothing. - 'val' escaped because 'fmt.Printf' takes
+	an "interface{}" argument. Go's rules say that if a variable's address is put into
+	an interface, it has to go to the heap just in case it's needed later.
+
+	3. What does "escapes to heap" mean? - It means the variable is moved from the "Stack"
+	(fast, temporary memory) to the "Heap" (slower, long-term memory). */
+}
+
 func main() {
+
+	fmt.Println("=== Process Information ===")
+	ExploreProcess()
+	fmt.Println("===")
+
 	fmt.Println("=== Math Operations ===")
 	f5, _ := Factorial(5)
 	fmt.Printf("Factorial(5) = %d\n", f5)
@@ -143,7 +195,7 @@ func main() {
 	fmt.Printf("Power(2, 8) = %d\n", pow)
 	fmt.Println("===")
 
-	fmt.Println("=== Counter Function ===")
+	fmt.Println("=== Closure Demonstration ===")
 	counter1 := MakeCounter(0)
 	fmt.Println(counter1())
 	fmt.Println(counter1())
@@ -190,5 +242,30 @@ func main() {
 	fmt.Printf("Compose (double then add two) on 5: %d\n", result)
 	fmt.Println("===")
 
-	ExploreProcess()
+	fmt.Println("=== Pointer Manipulation ===")
+	val := 10
+	fmt.Printf("Original value: %d\n", val)
+	DoublePointer(&val)
+	fmt.Printf("Doubled value using pointer: %d\n", val)
+
+	stackVal := CreateOnStack()
+	fmt.Printf("Value created on stack: %d\n", stackVal)
+
+	heapVal := CreateOnHeap()
+	fmt.Printf("Value created on heap: %d\n", *heapVal)
+
+	a, b := 1, 2
+	fmt.Printf("Before SwapValues: a=%d, b=%d\n", a, b)
+	a, b = SwapValues(a, b)
+	fmt.Printf("After SwapValues: a=%d, b=%d\n", a, b)
+
+	x, y := 3, 4
+	fmt.Printf("Before SwapPointers: x=%d, y=%d\n", x, y)
+	SwapPointers(&x, &y)
+	fmt.Printf("After SwapPointers: x=%d, y=%d\n", x, y)
+	fmt.Println("===")
+
+	fmt.Println("=== Escape Analysis ===")
+	AnalyzeEscape()
+	fmt.Println("===")
 }
