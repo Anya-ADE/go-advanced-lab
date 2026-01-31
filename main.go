@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"os"
 )
 
 func Factorial(n int) (int, error) {
@@ -115,6 +116,21 @@ func Compose(f func(int) int, g func(int) int) func(int) int {
 	}
 }
 
+func ExploreProcess() {
+	fmt.Println("=== Process Information ===")
+	// A Process ID (PID) is a unique numerical identifier assigned by the
+	// operating system to every active process
+	fmt.Printf("Current Process ID: %d\n", os.Getpid())
+	fmt.Printf("Parent Process ID: %d\n", os.Getppid())
+	data := []int{1, 2, 3, 4, 5}
+	fmt.Printf("Slice data: %v\n", data)
+	fmt.Printf("Memory address of slice header: %p\n", &data)
+	fmt.Printf("Memory address of first element: %p\n", &data[0])
+	// Process isolation is a security feature that prevents one process from
+	// accessing the memory of another process, ensuring stability and privacy.
+	fmt.Println("\nNote: Other processes cannot access these memory addresses due to process isolation.")
+}
+
 func main() {
 	fmt.Println("=== Math Operations ===")
 	f5, _ := Factorial(5)
@@ -172,4 +188,7 @@ func main() {
 	doubleTHenAddTwo := Compose(addTwo, double)
 	result := doubleTHenAddTwo(5)
 	fmt.Printf("Compose (double then add two) on 5: %d\n", result)
+	fmt.Println("===")
+
+	ExploreProcess()
 }
