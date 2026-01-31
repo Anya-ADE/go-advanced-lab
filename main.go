@@ -83,6 +83,38 @@ func MakeAccumulator(initial int) (add func(int), subtract func(int), get func()
 	return add, subtract, get
 }
 
+func Apply(num []int, operation func(int) int) []int {
+	result := make([]int, len(num))
+	for i, n := range num {
+		result[i] = operation(n)
+	}
+	return result
+}
+
+func Filter(nums []int, predict func(int) bool) []int {
+	result := []int{}
+	for _, n := range nums {
+		if predict(n) {
+			result = append(result, n)
+		}
+	}
+	return result
+}
+
+func Reduce(nums []int, initial int, operation func(accumulator, current int) int) int {
+	accumulator := initial
+	for _, n := range nums {
+		accumulator = operation(accumulator, n)
+	}
+	return accumulator
+}
+
+func Compose(f func(int) int, g func(int) int) func(int) int {
+	return func(x int) int {
+		return f(g(x))
+	}
+}
+
 func main() {
 	fmt.Println("=== Math Operations ===")
 	f5, _ := Factorial(5)
@@ -119,4 +151,25 @@ func main() {
 	sub(30)
 	fmt.Println(get())
 	fmt.Println("===")
+
+	fmt.Println("=== Higher-Order Functions ===")
+	nums := []int{1, 2, 3, 4}
+	squared := Apply(nums, func(n int) int { return n * n })
+	fmt.Printf("Apply (square): %v\n", squared)
+
+	evens := Filter(nums, func(n int) bool { return n%2 == 0 })
+	fmt.Printf("Filter (even): %v\n", evens)
+
+	sum := Reduce(nums, 0, func(acc, curr int) int { return acc + curr })
+	fmt.Printf("Reduce (sum): %d\n", sum)
+
+	product := Reduce(nums, 1, func(acc, curr int) int { return acc * curr })
+	fmt.Printf("Reduce (product): %d\n", product)
+
+	addTwo := func(x int) int { return x + 2 }
+	double = func(x int) int { return x * 2 }
+
+	doubleTHenAddTwo := Compose(addTwo, double)
+	result := doubleTHenAddTwo(5)
+	fmt.Printf("Compose (double then add two) on 5: %d\n", result)
 }
